@@ -1,37 +1,99 @@
-# Rapidez :package_name_without_prefix
-<!--delete-->
-This repository can be used as template for a new Rapidez package.
+# Rapidez Postcode
 
-- Click on "Use this template" on the top of this Github repo page
-- Run `php ./configure.php`
+Generic postcode/address lookup for Rapidez, with pluggable drivers. Listens to the
+`postcode-change` Vue event already wired into Rapidez's own address form, so it works
+out of the box without needing to change any checkout/address form Blade templates.
 
-Credits to [`spatie/package-skeleton-laravel`](https://github.com/spatie/package-skeleton-laravel) for the inpiration for this template.
+Ships with three drivers out of the box, each calling its own API directly - no Magento
+configuration required:
 
-Keep in mind that if you contribute to this template; it should work for official and unofficial packages!
-- `rapidez/something`
-- `someone/rapidez-something`
-<!--/delete-->
-:package_description
+- `postcodeeu` - [Postcode.eu](https://www.postcode.eu/)
+- `pro6pp` - [Pro6pp](https://pro6pp.nl/)
+- `postcodeservice` - [Postcodeservice](https://www.postcodeservice.com/)
+
+## Requirements
+
+- PHP ^8.2
+- `rapidez/core` ^5.0
 
 ## Installation
 
 ```
-composer require :vendor_slug/:package_slug
+composer require rapidez/postcode
 ```
 
 ## Configuration
 
-You can publish the config with:
+Publish the config with:
 ```
-php artisan vendor:publish --tag=rapidez-:package_slug_without_prefix-config
+php artisan vendor:publish --tag=rapidez-postcode-config
 ```
 
-## Views
+This adds `config/rapidez/postcode.php`, which picks the active driver via `POSTCODE_DRIVER` and
+holds each driver's credentials. Pick one driver and fill in its `.env` values:
 
-You can publish the views with:
+```env
+POSTCODE_DRIVER=postcodeeu
+POSTCODE_EU_API_KEY=
+POSTCODE_EU_API_SECRET=
 ```
-php artisan vendor:publish --tag=rapidez-:package_slug_without_prefix-views
+
+```env
+POSTCODE_DRIVER=pro6pp
+PRO6PP_API_KEY=
 ```
+
+```env
+POSTCODE_DRIVER=postcodeservice
+POSTCODESERVICE_CLIENT_ID=
+POSTCODESERVICE_SECURE_CODE=
+```
+
+`postcodeservice`'s defaults are the public test credentials, so that driver works out of the box
+without any configuration for testing purposes.
+
+Switching drivers is purely a `.env`/config change - no code changes, and no changes to the
+route, controller or JavaScript.
+
+## Response shape
+
+The `/api/postcode` endpoint (and each driver's `lookup()` method) returns:
+
+```json
+{
+    "found": true,
+    "street": "Dam",
+    "city": "Amsterdam",
+    "province": "Noord-Holland",
+    "postcode": "1012JS",
+    "houseNumber": "1",
+    "houseNumberAddition": "",
+    "houseNumberAdditions": [""]
+}
+```
+
+`found` is `false` (with all other fields `null` or empty) for an invalid or non-existent
+postcode/house number combination.
+
+## Adding a driver
+
+1. Create a class implementing `Rapidez\Postcode\Contracts\PostcodeDriver`:
+   ```php
+   class MyServiceDriver implements PostcodeDriver
+   {
+       public function lookup(string $postcode, string $houseNumber, ?string $addition = null): PostcodeResult
+       {
+           // Call the external API and return a PostcodeResult.
+       }
+   }
+   ```
+2. Add a `create<Name>Driver()` method to `Rapidez\Postcode\PostcodeManager` that resolves it from
+   config (the name maps to the `drivers.<name>` config key and the `POSTCODE_DRIVER` value, e.g.
+   `createMyserviceDriver()` for `myservice`).
+3. Add a `drivers.<name>` section to `config/rapidez/postcode.php` for its credentials/settings.
+
+No changes to the route, controller or JavaScript are needed - the manager resolves whichever
+driver is configured, and the controller/JS are entirely driver-agnostic.
 
 ## License
 
