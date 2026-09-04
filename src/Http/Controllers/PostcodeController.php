@@ -8,9 +8,7 @@ use Rapidez\Postcode\PostcodeManager;
 
 class PostcodeController
 {
-    public function __construct(protected PostcodeManager $manager)
-    {
-    }
+    public function __construct(protected PostcodeManager $manager) {}
 
     public function __invoke(Request $request)
     {

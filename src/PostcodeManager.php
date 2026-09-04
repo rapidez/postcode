@@ -5,8 +5,8 @@ namespace Rapidez\Postcode;
 use Illuminate\Support\Manager;
 use Rapidez\Postcode\Contracts\PostcodeDriver;
 use Rapidez\Postcode\Drivers\PostcodeEuDriver;
-use Rapidez\Postcode\Drivers\Pro6ppDriver;
 use Rapidez\Postcode\Drivers\PostcodeserviceDriver;
+use Rapidez\Postcode\Drivers\Pro6ppDriver;
 
 class PostcodeManager extends Manager
 {

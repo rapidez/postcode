@@ -8,9 +8,7 @@ use Rapidez\Postcode\DataTransferObjects\PostcodeResult;
 
 class PostcodeserviceDriver implements PostcodeDriver
 {
-    public function __construct(protected ?string $clientId, protected ?string $secureCode)
-    {
-    }
+    public function __construct(protected ?string $clientId, protected ?string $secureCode) {}
 
     public function lookup(string $postcode, string $houseNumber, ?string $addition = null): PostcodeResult
     {
