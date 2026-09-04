@@ -3,7 +3,7 @@
 
 function ask(string $question, string $default = ''): string
 {
-    $answer = readline($question.($default ? " ({$default})" : null).': ');
+    $answer = readline($question . ($default ? " ({$default})" : null) . ': ');
 
     if (! $answer) {
         return $default;
@@ -14,7 +14,7 @@ function ask(string $question, string $default = ''): string
 
 function confirm(string $question, bool $default = false): bool
 {
-    $answer = ask($question.' ('.($default ? 'Y/n' : 'y/N').')');
+    $answer = ask($question . ' (' . ($default ? 'Y/n' : 'y/N') . ')');
 
     if (! $answer) {
         return $default;
@@ -25,7 +25,7 @@ function confirm(string $question, bool $default = false): bool
 
 function writeln(string $line): void
 {
-    echo $line.PHP_EOL;
+    echo $line . PHP_EOL;
 }
 
 function run(string $command): string
@@ -84,7 +84,7 @@ function remove_prefix(string $prefix, string $content): string
 
 function remove_composer_deps(array $names)
 {
-    $data = json_decode(file_get_contents(__DIR__.'/composer.json'), true);
+    $data = json_decode(file_get_contents(__DIR__ . '/composer.json'), true);
 
     foreach ($data['require-dev'] as $name => $version) {
         if (in_array($name, $names, true)) {
@@ -92,12 +92,12 @@ function remove_composer_deps(array $names)
         }
     }
 
-    file_put_contents(__DIR__.'/composer.json', json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+    file_put_contents(__DIR__ . '/composer.json', json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 }
 
 function remove_composer_script($scriptName)
 {
-    $data = json_decode(file_get_contents(__DIR__.'/composer.json'), true);
+    $data = json_decode(file_get_contents(__DIR__ . '/composer.json'), true);
 
     foreach ($data['scripts'] as $name => $script) {
         if ($scriptName === $name) {
@@ -106,7 +106,7 @@ function remove_composer_script($scriptName)
         }
     }
 
-    file_put_contents(__DIR__.'/composer.json', json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+    file_put_contents(__DIR__ . '/composer.json', json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 }
 
 function remove_readme_paragraphs(string $file): void
@@ -133,12 +133,12 @@ function determineSeparator(string $path): string
 
 function replaceForWindows(): array
 {
-    return preg_split('/\\r\\n|\\r|\\n/', run('dir /S /B * | findstr /v /i .git\ | findstr /v /i vendor | findstr /v /i '.basename(__FILE__).' | findstr /r /i /M /F:/ ":author :vendor :package VendorName skeleton vendor_name vendor_slug author@domain.com"'));
+    return preg_split('/\\r\\n|\\r|\\n/', run('dir /S /B * | findstr /v /i .git\ | findstr /v /i vendor | findstr /v /i ' . basename(__FILE__) . ' | findstr /r /i /M /F:/ ":author :vendor :package VendorName skeleton vendor_name vendor_slug author@domain.com"'));
 }
 
 function replaceForAllOtherOSes(): array
 {
-    return explode(PHP_EOL, run('grep -E -r -l -i ":author|:vendor|:package|VendorName|skeleton|vendor_name|vendor_slug|author@domain.com" --exclude-dir=vendor ./* ./.github/* | grep -v '.basename(__FILE__)));
+    return explode(PHP_EOL, run('grep -E -r -l -i ":author|:vendor|:package|VendorName|skeleton|vendor_name|vendor_slug|author@domain.com" --exclude-dir=vendor ./* ./.github/* | grep -v ' . basename(__FILE__)));
 }
 
 $gitName = run('git config user.name');
@@ -205,8 +205,8 @@ foreach ($files as $file) {
     ]);
 
     match (true) {
-        str_contains($file, determineSeparator('src/SkeletonServiceProvider.php')) => rename($file, determineSeparator('./src/'.$className.'ServiceProvider.php')),
-        str_contains($file, determineSeparator('config/rapidez/skeleton.php')) => rename($file, determineSeparator('./config/rapidez/'.$packageSlugWithoutPrefix.'.php')),
+        str_contains($file, determineSeparator('src/SkeletonServiceProvider.php')) => rename($file, determineSeparator('./src/' . $className . 'ServiceProvider.php')),
+        str_contains($file, determineSeparator('config/rapidez/skeleton.php')) => rename($file, determineSeparator('./config/rapidez/' . $packageSlugWithoutPrefix . '.php')),
         str_contains($file, 'README.md') => remove_readme_paragraphs($file),
         default => [],
     };
