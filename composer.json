@@ -42,6 +42,6 @@
     },
     "require-dev": {
         "larastan/larastan": "^3.9",
-        "rapidez/coding-standards": "^1.0"
+        "rapidez/coding-standards": "^1.0.1"
     }
 }
