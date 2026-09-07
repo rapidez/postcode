@@ -13,8 +13,7 @@ final class PostcodeResult
         public readonly ?string $houseNumber = null,
         public readonly ?string $houseNumberAddition = null,
         public readonly array $houseNumberAdditions = [],
-    ) {
-    }
+    ) {}
 
     public function toArray(): array
     {
