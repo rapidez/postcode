@@ -1,17 +1,19 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "rapidez/postcode",
+    "description": "Generic postcode/address lookup for Rapidez, with pluggable drivers for Postcode.eu, Pro6pp and Postcodeservice",
     "keywords": [
         "rapidez",
-        ":package_slug"
+        "postcode",
+        "address-lookup"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/rapidez/postcode",
     "license": "GPL-3.0-or-later",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
-            "role": "Developer"
+            "name": "Claudio Ferraro",
+            "email": "claudio@justbetter.nl",
+            "homepage": "https://justbetter.nl",
+            "role": "Developer at JustBetter"
         }
     ],
     "minimum-stability": "dev",
@@ -22,7 +24,7 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src"
+            "Rapidez\\Postcode\\": "src"
         }
     },
     "config": {
@@ -34,12 +36,12 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "Rapidez\\Postcode\\PostcodeServiceProvider"
             ]
         }
     },
     "require-dev": {
         "larastan/larastan": "^3.9",
-        "rapidez/coding-standards": "^1.0"
+        "rapidez/coding-standards": "^1.0.1"
     }
 }
