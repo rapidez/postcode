@@ -8,7 +8,12 @@ use Rapidez\Postcode\DataTransferObjects\PostcodeResult;
 
 class Pro6ppDriver implements PostcodeDriver
 {
-    public function __construct(protected ?string $key) {}
+    public function __construct(protected ?string $key)
+    {
+        if (! $this->key) {
+            throw new \InvalidArgumentException('The pro6pp driver requires PRO6PP_API_KEY to be set.');
+        }
+    }
 
     public function lookup(string $postcode, string $houseNumber, ?string $addition = null): PostcodeResult
     {
@@ -42,6 +47,14 @@ class Pro6ppDriver implements PostcodeDriver
         );
     }
 
+    /**
+     * Pro6pp returns one `streetnumbers` string per street, listing every house number (and
+     * addition) that exists on it, separated by semicolons, e.g. "1;11-13;21-27;1 A;1 B" means
+     * house numbers 1, 11 through 13 and 21 through 27, and 1A/1B, all exist on this street.
+     *
+     * This checks whether the given house number (with its addition) is covered by that
+     * list, either as an exact entry or within one of the numeric ranges.
+     */
     protected function isHouseNumberValid(string $houseNumber, ?string $addition, string $validRanges): bool
     {
         $houseNumberWithoutAddition = (int) preg_replace('/\D/', '', $houseNumber);
@@ -54,6 +67,7 @@ class Pro6ppDriver implements PostcodeDriver
                 return true;
             }
 
+            // A numeric range entry, e.g. "11-13": valid if the house number falls within it.
             if (str_contains($range, '-')) {
                 [$start, $end] = array_map('trim', explode('-', $range));
 

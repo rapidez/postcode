@@ -4,6 +4,9 @@ Generic postcode/address lookup for Rapidez, with pluggable drivers. Listens to 
 `postcode-change` Vue event already wired into Rapidez's own address form, so it works
 out of the box without needing to change any checkout/address form Blade templates.
 
+Dutch (NL) addresses only for now; postcode validation and all three drivers' APIs are
+NL-specific.
+
 Ships with three drivers out of the box, each calling its own API directly - no Magento
 configuration required:
 
@@ -49,10 +52,12 @@ POSTCODESERVICE_CLIENT_ID=
 POSTCODESERVICE_SECURE_CODE=
 ```
 
-`postcodeservice`'s defaults are the public test credentials, so that driver works out of the box
-without any configuration for testing purposes.
+Test credentials for `postcodeservice` are documented at
+[developers.postcodeservice.com](https://developers.postcodeservice.com/#authenticating-requests)
+if you want to try that driver without your own account; they're not hardcoded as a default here
+since the docs note they may change without prior notice.
 
-Switching drivers is purely a `.env`/config change - no code changes, and no changes to the
+Switching drivers is purely a `.env`/config change; no code changes, and no changes to the
 route, controller or JavaScript.
 
 ## Response shape
@@ -77,23 +82,35 @@ postcode/house number combination.
 
 ## Adding a driver
 
-1. Create a class implementing `Rapidez\Postcode\Contracts\PostcodeDriver`:
-   ```php
-   class MyServiceDriver implements PostcodeDriver
-   {
-       public function lookup(string $postcode, string $houseNumber, ?string $addition = null): PostcodeResult
-       {
-           // Call the external API and return a PostcodeResult.
-       }
-   }
-   ```
-2. Add a `create<Name>Driver()` method to `Rapidez\Postcode\PostcodeManager` that resolves it from
-   config (the name maps to the `drivers.<name>` config key and the `POSTCODE_DRIVER` value, e.g.
-   `createMyserviceDriver()` for `myservice`).
-3. Add a `drivers.<name>` section to `config/rapidez/postcode.php` for its credentials/settings.
+A driver is a class implementing `Rapidez\Postcode\Contracts\PostcodeDriver`:
 
-No changes to the route, controller or JavaScript are needed - the manager resolves whichever
-driver is configured, and the controller/JS are entirely driver-agnostic.
+```php
+class MyServiceDriver implements PostcodeDriver
+{
+    public function lookup(string $postcode, string $houseNumber, ?string $addition = null): PostcodeResult
+    {
+        // Call the external API and return a PostcodeResult.
+    }
+}
+```
+
+Register it from your own project or package; no changes to this package needed; by extending
+the manager, e.g. in a service provider's `boot()` method:
+
+```php
+$this->app->make(\Rapidez\Postcode\PostcodeManager::class)->extend(
+    'myservice',
+    fn () => new MyServiceDriver(config('rapidez.postcode.drivers.myservice.key')),
+);
+```
+
+Then select it as usual with `POSTCODE_DRIVER=myservice`. No changes to the route, controller or
+JavaScript are needed either way; they're entirely driver-agnostic.
+
+To contribute a new driver to this package itself instead, add a `create<Name>Driver()` method to
+`PostcodeManager` (the name maps to the `drivers.<name>` config key and the `POSTCODE_DRIVER`
+value, e.g. `createMyserviceDriver()` for `myservice`) and a matching `drivers.<name>` section to
+`config/rapidez/postcode.php`.
 
 ## License
 

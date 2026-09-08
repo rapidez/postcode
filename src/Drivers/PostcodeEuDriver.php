@@ -8,7 +8,12 @@ use Rapidez\Postcode\DataTransferObjects\PostcodeResult;
 
 class PostcodeEuDriver implements PostcodeDriver
 {
-    public function __construct(protected ?string $key, protected ?string $secret) {}
+    public function __construct(protected ?string $key, protected ?string $secret)
+    {
+        if (! $this->key || ! $this->secret) {
+            throw new \InvalidArgumentException('The postcodeeu driver requires POSTCODE_EU_API_KEY and POSTCODE_EU_API_SECRET to be set.');
+        }
+    }
 
     public function lookup(string $postcode, string $houseNumber, ?string $addition = null): PostcodeResult
     {
