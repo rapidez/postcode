@@ -3,6 +3,7 @@
 namespace Rapidez\Postcode\Drivers;
 
 use Illuminate\Support\Facades\Http;
+use InvalidArgumentException;
 use Rapidez\Postcode\Contracts\PostcodeDriver;
 use Rapidez\Postcode\DataTransferObjects\PostcodeResult;
 
@@ -11,7 +12,7 @@ class Pro6ppDriver implements PostcodeDriver
     public function __construct(protected ?string $key)
     {
         if (! $this->key) {
-            throw new \InvalidArgumentException('The pro6pp driver requires PRO6PP_API_KEY to be set.');
+            throw new InvalidArgumentException('The pro6pp driver requires PRO6PP_API_KEY to be set.');
         }
     }
 

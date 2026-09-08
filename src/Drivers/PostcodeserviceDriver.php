@@ -3,6 +3,7 @@
 namespace Rapidez\Postcode\Drivers;
 
 use Illuminate\Support\Facades\Http;
+use InvalidArgumentException;
 use Rapidez\Postcode\Contracts\PostcodeDriver;
 use Rapidez\Postcode\DataTransferObjects\PostcodeResult;
 
@@ -11,7 +12,7 @@ class PostcodeserviceDriver implements PostcodeDriver
     public function __construct(protected ?string $clientId, protected ?string $secureCode)
     {
         if (! $this->clientId || ! $this->secureCode) {
-            throw new \InvalidArgumentException('The postcodeservice driver requires POSTCODESERVICE_CLIENT_ID and POSTCODESERVICE_SECURE_CODE to be set.');
+            throw new InvalidArgumentException('The postcodeservice driver requires POSTCODESERVICE_CLIENT_ID and POSTCODESERVICE_SECURE_CODE to be set.');
         }
     }
 
