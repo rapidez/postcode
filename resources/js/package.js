@@ -44,4 +44,4 @@ async function updateAddress(address, event) {
     event?.target?.parentElement?.dispatchEvent?.(new Event('change', { bubbles: true }))
 }
 
-on('postcode-change', useDebounceFn(updateAddress, 100), { autoremove: false })
+on('postcode-change', useDebounceFn(updateAddress, 100), { autoRemove: false })
