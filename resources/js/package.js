@@ -1,5 +1,6 @@
 import { useDebounceFn, useMemoize } from '@vueuse/core'
 import { on } from 'Vendor/rapidez/core/resources/js/polyfills/emit.js'
+import { nextTick } from 'vue'
 
 const getAddress = useMemoize(async function (postcode, housenumber, addition) {
     return window.rapidezAPI('post', 'postcode', { postcode, housenumber, addition })
@@ -41,6 +42,8 @@ async function updateAddress(address, event) {
 
     address.city = response.city
     address.street[0] = response.street
+    
+    await nextTick()
     event?.target?.parentElement?.dispatchEvent?.(new Event('change', { bubbles: true }))
 }
 
