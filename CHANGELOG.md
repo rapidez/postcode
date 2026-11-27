@@ -1,6 +1,14 @@
 # Changelog 
 
-[Unreleased changes](https://github.com/rapidez/postcode/compare/5.0.1...5.0.1)
+[Unreleased changes](https://github.com/rapidez/postcode/compare/5.0.2...5.0.2)
+## [5.0.2](https://github.com/rapidez/postcode/releases/tag/5.0.2) - 2026-11-27
+
+### Fixed
+
+- Wait one tick to dispatch change event (782b5fd)
+
+
+
 ## [5.0.1](https://github.com/rapidez/postcode/releases/tag/5.0.1) - 2026-10-09
 
 ### Fixed
